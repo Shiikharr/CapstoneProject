@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference UsersRef;
 
+    private ImageButton AddNewPostButton;
+
     private CircleImageView NavProfileImage;
     private TextView NavProfileUserName;
 
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         mtoolbar=(Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mtoolbar);
         getSupportActionBar().setTitle("Home");
+
+        AddNewPostButton = (ImageButton) findViewById(R.id.add_new_post_button);
 
         drawerLayout=(DrawerLayout) findViewById(R.id.drawable_layout);
         actionBarDrawerToggle=new ActionBarDrawerToggle(MainActivity.this,drawerLayout,R.string.drawer_open,R.string.drawer_close);
@@ -107,6 +112,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        AddNewPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SendUserToPostActivity();
+            }
+        });
+
+    }
+
+    private void SendUserToPostActivity()
+    {
+        Intent addNewPostIntent = new Intent(MainActivity.this,PostActivity.class);
+        startActivity(addNewPostIntent);
     }
 
     @Override
@@ -174,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (item.getItemId())
         {
+            case R.id.nav_post:
+                SendUserToPostActivity();
+                break;
             case R.id.nav_profile:
                 Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
                 break;
