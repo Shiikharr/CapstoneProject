@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity
                 Toast.makeText(this, "Please wait while you are being authenticated.", Toast.LENGTH_SHORT).show();
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                Toast.makeText(this, "Can't authenticate.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Choose an account.", Toast.LENGTH_SHORT).show();
                 loadingBar.dismiss();
             }
         }
