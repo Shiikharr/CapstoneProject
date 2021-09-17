@@ -132,8 +132,9 @@ public class SetupActivity extends AppCompatActivity
             {
                 loadingBar.setTitle("Profile Image");
                 loadingBar.setMessage("Please wait,while your profile image is uploading");
-                loadingBar.show();
                 loadingBar.setCanceledOnTouchOutside(true);
+                loadingBar.show();
+
 
                 Uri resultUri = result.getUri();
 

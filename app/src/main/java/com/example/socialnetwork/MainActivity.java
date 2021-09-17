@@ -319,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Messages", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_settings:
+                SendUserToSettingsActivity();
                 Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_Logout:
@@ -326,5 +327,10 @@ public class MainActivity extends AppCompatActivity {
                 SendUserToLoginActivity();
                 break;
         }
+    }
+    private void SendUserToSettingsActivity()
+    {
+        Intent settingIntent = new Intent(MainActivity.this,SettingsActivity.class);
+        startActivity(settingIntent);
     }
 }
