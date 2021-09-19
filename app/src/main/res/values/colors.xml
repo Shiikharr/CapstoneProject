@@ -12,4 +12,5 @@
     <color name="colorAccent">#e9ebee</color>
     <color name="red">#ED1C1C</color>
     <color name="darker_grey">#6E6969</color>
+    <color name="colorProfile">#3b4041</color>
 </resources>
