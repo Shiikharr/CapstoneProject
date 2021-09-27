@@ -83,6 +83,19 @@ public class FindFriendsActivity extends AppCompatActivity
                 holder.setFullname(model.getFullname());
                 holder.setStatus(model.getStatus());
                 holder.setProfileimage(model.getProfileimage());
+
+                holder.mView.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        String visit_user_id = getRef(position).getKey();
+
+                        Intent profileIntent = new Intent(FindFriendsActivity.this, PersonProfileActivity.class);
+                        profileIntent.putExtra("visit_user_id", visit_user_id);
+                        startActivity(profileIntent);
+                    }
+                });
             }
 
             @Override
