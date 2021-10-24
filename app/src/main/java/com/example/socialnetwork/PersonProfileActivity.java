@@ -110,6 +110,10 @@ public class PersonProfileActivity extends AppCompatActivity
                     {
                         AcceptFriendRequest();
                     }
+                    if(CURRENT_STATE.equals("friends"))
+                    {
+                        UnfriendAnExistingFriend();
+                    }
                 }
             });
         }
@@ -118,6 +122,38 @@ public class PersonProfileActivity extends AppCompatActivity
             DeclineFriendReqButton.setVisibility(View.INVISIBLE);
             SendFriendReqButton.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void UnfriendAnExistingFriend()
+    {
+        FriendsRef.child(senderUserId).child(receiverUserId)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            FriendsRef.child(receiverUserId).child(senderUserId)
+                                    .removeValue()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if(task.isSuccessful())
+                                            {
+                                                SendFriendReqButton.setEnabled(true);
+                                                CURRENT_STATE = "not_friends";
+                                                SendFriendReqButton.setText("Send friend request");
+
+                                                DeclineFriendReqButton.setVisibility(View.INVISIBLE);
+                                                DeclineFriendReqButton.setEnabled(false);
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 
     private void AcceptFriendRequest()
@@ -235,7 +271,39 @@ public class PersonProfileActivity extends AppCompatActivity
 
                                 DeclineFriendReqButton.setVisibility(View.VISIBLE);
                                 DeclineFriendReqButton.setEnabled(true);
+
+                                DeclineFriendReqButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v)
+                                    {
+                                        CancelFriendRequest();
+                                    }
+                                });
                             }
+                        }
+                        else
+                        {
+                            FriendsRef.child(senderUserId)
+                                    .addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                                        {
+                                            if(snapshot.hasChild(receiverUserId))
+                                            {
+                                                CURRENT_STATE = "friends";
+                                                SendFriendReqButton.setText("Unfriend");
+
+                                                DeclineFriendReqButton.setVisibility(View.INVISIBLE);
+                                                DeclineFriendReqButton.setEnabled(false);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                         }
                     }
 
