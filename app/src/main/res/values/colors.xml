@@ -14,4 +14,5 @@
     <color name="darker_grey">#6E6969</color>
     <color name="colorProfile">#3b4041</color>
     <color name="mainBackground">#d7d7d7</color>
+    <color name="sendercolor">#a0179e</color>
 </resources>
