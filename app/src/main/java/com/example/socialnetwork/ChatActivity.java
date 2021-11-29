@@ -1,9 +1,11 @@
 package com.example.socialnetwork;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -13,12 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,8 +31,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -38,7 +44,11 @@ public class ChatActivity extends AppCompatActivity
     private Toolbar ChattoolBar;
     private ImageButton SendMessageButton, SendImagefileButton;
     private EditText userMessageInput;
+
     private RecyclerView userMessagesList;
+    private final List<Messages> messagesList = new ArrayList<>();
+    private LinearLayoutManager linearLayoutManager;
+    private MessagesAdater messagesAdater;
 
     private String messageReceiverID, messageReceiverName, messageSenderID, saveCurrentDate, saveCurrentTime;
 
@@ -72,6 +82,45 @@ public class ChatActivity extends AppCompatActivity
                 SendMessage();
             }
         });
+
+        FetchMessages();
+    }
+
+    private void FetchMessages()
+    {
+        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded( DataSnapshot snapshot,  String previousChildName)
+                    {
+                        if(snapshot.exists())
+                        {
+                            Messages messages = snapshot.getValue(Messages.class);
+                            messagesList.add(messages);
+                            messagesAdater.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged( DataSnapshot snapshot, String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved( DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved( DataSnapshot snapshot, String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onCancelled( DatabaseError error) {
+
+                    }
+                });
     }
 
     private void SendMessage() 
@@ -116,14 +165,14 @@ public class ChatActivity extends AppCompatActivity
                     if(task.isSuccessful())
                     {
                         Toast.makeText(ChatActivity.this, "Message Sent Successfully", Toast.LENGTH_SHORT).show();
+                        userMessageInput.setText("");
                     }
                     else
                     {
                         String message = task.getException().getMessage();
                         Toast.makeText(ChatActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                        userMessageInput.setText("");
                     }
-
-                    userMessageInput.setText("");
                 }
             });
         }
@@ -169,5 +218,12 @@ public class ChatActivity extends AppCompatActivity
         SendMessageButton = (ImageButton) findViewById(R.id.send_message_button);
         SendImagefileButton = (ImageButton) findViewById(R.id.send_image_file_button);
         userMessageInput = (EditText) findViewById(R.id.input_message);
+
+        messagesAdater = new MessagesAdater(messagesList);
+        userMessagesList = (RecyclerView) findViewById(R.id.messages_list_users);
+        linearLayoutManager = new LinearLayoutManager(this);
+        userMessagesList.setHasFixedSize(true);
+        userMessagesList.setLayoutManager(linearLayoutManager);
+        userMessagesList.setAdapter(messagesAdater);
     }
 }
