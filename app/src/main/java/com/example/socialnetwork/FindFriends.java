@@ -1,5 +1,6 @@
 package com.example.socialnetwork;
 
+
 public class FindFriends
 {
     public String profileimage, fullname, status;
@@ -14,6 +15,7 @@ public class FindFriends
         this.fullname = fullname;
         this.status = status;
     }
+
 
     public String getProfileimage() {
         return profileimage;
